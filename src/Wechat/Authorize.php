@@ -9,8 +9,10 @@ use Stoneworld\Wechat\Utils\Bag;
  */
 class Authorize
 {
-    const API_USER = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_login_info';
-    const API_URL = 'https://qy.weixin.qq.com/cgi-bin/loginpage';
+    const API_USER  = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_login_info';
+    const API_URL   = 'https://qy.weixin.qq.com/cgi-bin/loginpage';
+    const API_LOGIN = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_login_url';
+
     /**
      * 应用ID.
      *
@@ -44,10 +46,10 @@ class Authorize
      */
     public function __construct($appId, $appSecret)
     {
-        $this->appId = $appId;
+        $this->appId     = $appId;
         $this->appSecret = $appSecret;
-        $this->http = new Http(new AccessToken($appId, $appSecret));
-        $this->input = new Input();
+        $this->http      = new Http(new AccessToken($appId, $appSecret));
+        $this->input     = new Input();
     }
 
     /**
@@ -97,10 +99,10 @@ class Authorize
         $to !== null || $to = Url::current();
 
         $params = array(
-            'corp_id' => $this->appId,
+            'corp_id'      => $this->appId,
             'redirect_uri' => $to,
-            'state' => $state,
-            'usertype' => $usertype
+            'state'        => $state,
+            'usertype'     => $usertype
         );
 
         return self::API_URL . '?' . http_build_query($params);
@@ -113,5 +115,27 @@ class Authorize
     public function user()
     {
         return $this->http->jsonPost(self::API_USER, array('auth_code' => $this->input->get('auth_code')));
+    }
+
+    /**
+     * 获取登录企业号官网的url.
+     *
+     * @param string $login_ticket 通过get_login_info得到的login_ticket, 10小时有效
+     * @param string $target       登录跳转到企业号后台的目标页面，目前有：agent_setting、send_msg、contact
+     * @param string $agentid      授权方应用id
+     *
+     * @return string
+     */
+    public function getLoginUrl($login_ticket, $target, $agentid = null)
+    {
+        $params = array(
+            'login_ticket' => $login_ticket,
+            'target'       => $target,
+            'agentid'      => $agentid
+        );
+
+        $response = $this->http->jsonPost(self::API_LOGIN, $params);
+
+        return $response['login_url'];
     }
 }
