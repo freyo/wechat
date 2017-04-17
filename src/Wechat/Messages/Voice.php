@@ -5,29 +5,28 @@ namespace Stoneworld\Wechat\Messages;
 use Stoneworld\Wechat\Media;
 
 /**
- * 声音消息
+ * 声音消息.
  *
  * @property string $media_id
  */
 class Voice extends BaseMessage
 {
-
     /**
-     * 属性
+     * 属性.
      *
      * @var array
      */
-    protected $properties = array('media_id');
+    protected $properties = ['media_id'];
 
     /**
-     * 媒体
+     * 媒体.
      *
      * @var \Stoneworld\Wechat\Media
      */
     protected $media;
 
     /**
-     * 设置语音
+     * 设置语音.
      *
      * @param string $mediaId
      *
@@ -41,30 +40,30 @@ class Voice extends BaseMessage
     }
 
     /**
-     * 生成主动消息数组
+     * 生成主动消息数组.
      *
      * @return array
      */
     public function toStaff()
     {
-        return array(
-                'voice' => array(
+        return [
+                'voice' => [
                             'media_id' => $this->media_id,
-                           ),
-               );
+                           ],
+               ];
     }
 
     /**
-     * 生成回复消息数组
+     * 生成回复消息数组.
      *
      * @return array
      */
     public function toReply()
     {
-        return array(
-                'Voice' => array(
+        return [
+                'Voice' => [
                             'MediaId' => $this->media_id,
-                           ),
-               );
+                           ],
+               ];
     }
 }

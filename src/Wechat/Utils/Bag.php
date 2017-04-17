@@ -23,14 +23,14 @@ class Bag implements
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * set data.
      *
      * @param mixed $data 数据数组
      */
-    public function __construct($data = array())
+    public function __construct($data = [])
     {
         $this->data = (array) $data;
     }

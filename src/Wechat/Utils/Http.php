@@ -62,7 +62,7 @@ class Http
      *
      * @return array
      */
-    public function get($url, $params = array(), $options = array())
+    public function get($url, $params = [], $options = [])
     {
         return $this->request($url, self::GET, $params, $options);
     }
@@ -76,7 +76,7 @@ class Http
      *
      * @return array
      */
-    public function post($url, $params = array(), $options = array())
+    public function post($url, $params = [], $options = [])
     {
         return $this->request($url, self::POST, $params, $options);
     }
@@ -90,7 +90,7 @@ class Http
      *
      * @return array
      */
-    public function put($url, $params = array(), $options = array())
+    public function put($url, $params = [], $options = [])
     {
         return $this->request($url, self::PUT, $params, $options);
     }
@@ -104,7 +104,7 @@ class Http
      *
      * @return array
      */
-    public function patch($url, $params = array(), $options = array())
+    public function patch($url, $params = [], $options = [])
     {
         return $this->request($url, self::PATCH, $params, $options);
     }
@@ -118,7 +118,7 @@ class Http
      *
      * @return array
      */
-    public function delete($url, $params = array(), $options = array())
+    public function delete($url, $params = [], $options = [])
     {
         return $this->request($url, self::DELETE, $params, $options);
     }
@@ -133,11 +133,11 @@ class Http
      *
      * @return array
      */
-    protected function request($url, $method = self::GET, $params = array(), $options = array())
+    protected function request($url, $method = self::GET, $params = [], $options = [])
     {
         if ($method === self::GET || $method === self::DELETE) {
             $url .= (stripos($url, '?') ? '&' : '?').http_build_query($params);
-            $params = array();
+            $params = [];
         }
 
         curl_setopt($this->curl, CURLOPT_HEADER, 1);
@@ -154,7 +154,7 @@ class Http
             //设置证书
             //使用证书：cert 与 key 分别属于两个.pem文件
             curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);//严格校验
+            curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2); //严格校验
             curl_setopt($this->curl, CURLOPT_SSLCERTTYPE, 'PEM');
             curl_setopt($this->curl, CURLOPT_SSLCERT, $options['sslcert_path']);
             curl_setopt($this->curl, CURLOPT_SSLKEYTYPE, 'PEM');
@@ -200,13 +200,13 @@ class Http
         $header = substr($response['response'], 0, $headerSize);
         $body = substr($response['response'], $headerSize);
 
-        $results = array(
-                    'curl_info' => $response['curl_info'],
+        $results = [
+                    'curl_info'    => $response['curl_info'],
                     'content_type' => $response['curl_info']['content_type'],
-                    'status' => $response['curl_info']['http_code'],
-                    'headers' => $this->splitHeaders($header),
-                    'data' => $body,
-                   );
+                    'status'       => $response['curl_info']['http_code'],
+                    'headers'      => $this->splitHeaders($header),
+                    'data'         => $body,
+                   ];
 
         return $results;
     }
@@ -236,7 +236,7 @@ class Http
      */
     protected function splitHeaders($rawHeaders)
     {
-        $headers = array();
+        $headers = [];
 
         $lines = explode("\n", trim($rawHeaders));
         $headers['HTTP'] = array_shift($lines);
@@ -267,10 +267,10 @@ class Http
 
         $curlInfo = curl_getinfo($this->curl);
 
-        $results = array(
+        $results = [
                     'curl_info' => $curlInfo,
-                    'response' => $response,
-                   );
+                    'response'  => $response,
+                   ];
 
         return $results;
     }

@@ -5,27 +5,26 @@ namespace Stoneworld\Wechat\Messages;
 use Stoneworld\Wechat\Exception;
 
 /**
- * 坐标消息
+ * 坐标消息.
  *
  * @property string $content
  */
 class Location extends BaseMessage
 {
-
     /**
-     * 属性
+     * 属性.
      *
      * @var array
      */
-    protected $properties = array(
+    protected $properties = [
                              'lat',
                              'lon',
                              'scale',
                              'label',
-                            );
+                            ];
 
     /**
-     * 生成主动消息数组
+     * 生成主动消息数组.
      */
     public function toStaff()
     {
@@ -33,7 +32,7 @@ class Location extends BaseMessage
     }
 
     /**
-     * 生成回复消息数组
+     * 生成回复消息数组.
      */
     public function toReply()
     {

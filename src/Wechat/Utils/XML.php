@@ -44,7 +44,7 @@ class XML
         $id = 'id'
     ) {
         if (is_array($attr)) {
-            $_attr = array();
+            $_attr = [];
 
             foreach ($attr as $key => $value) {
                 $_attr[] = "{$key}=\"{$value}\"";
@@ -56,8 +56,8 @@ class XML
         $attr = trim($attr);
         $attr = empty($attr) ? '' : " {$attr}";
         $xml = "<{$root}{$attr}>";
-        $xml  .= self::data2Xml($data, $item, $id);
-        $xml  .= "</{$root}>";
+        $xml .= self::data2Xml($data, $item, $id);
+        $xml .= "</{$root}>";
 
         return $xml;
     }

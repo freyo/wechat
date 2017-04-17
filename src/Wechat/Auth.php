@@ -37,7 +37,6 @@ class Auth
      */
     protected $input;
 
-
     const API_USER = 'https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo';
     const API_URL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
     const API_TO_OPENID = 'https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid';
@@ -69,13 +68,13 @@ class Auth
     {
         $to !== null || $to = Url::current();
 
-        $params = array(
-                   'appid' => $this->appId,
-                   'redirect_uri' => $to,
+        $params = [
+                   'appid'         => $this->appId,
+                   'redirect_uri'  => $to,
                    'response_type' => 'code',
-                   'scope' => $scope,
-                   'state' => $state,
-                  );
+                   'scope'         => $scope,
+                   'state'         => $state,
+                  ];
 
         return self::API_URL.'?'.http_build_query($params).'#wechat_redirect';
     }
@@ -96,12 +95,13 @@ class Auth
     }
 
     /**
-     * 获取用户的openid|userid
+     * 获取用户的openid|userid.
+     *
      * @return [type] [description]
      */
     public function user()
     {
-        return $this->http->get(self::API_USER . '?code=' . $this->input->get('code'));
+        return $this->http->get(self::API_USER.'?code='.$this->input->get('code'));
     }
 
     /**
@@ -123,17 +123,19 @@ class Auth
     }
 
     /**
-     * userid转换成openid接口
-     * @param  string $userId  userid
-     * @param  int    $agentId 应用id
+     * userid转换成openid接口.
+     *
+     * @param string $userId  userid
+     * @param int    $agentId 应用id
+     *
      * @return array
      */
     public function toOpenId($userId, $agentId)
     {
-        $params = array(
-                'userid' => $userId,
+        $params = [
+                'userid'  => $userId,
                 'agentid' => $agentId,
-            );
+            ];
 
         return $this->http->jsonPost(self::API_TO_OPENID, $params);
     }

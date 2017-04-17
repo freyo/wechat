@@ -5,7 +5,6 @@ namespace Stoneworld\Wechat;
 use Stoneworld\Wechat\Utils\Arr;
 use Stoneworld\Wechat\Utils\Bag;
 use Stoneworld\Wechat\Utils\File;
-use Stoneworld\Wechat\Utils\JSON;
 
 /**
  * 媒体素材.
@@ -32,13 +31,13 @@ class Media
      *
      * @var array
      */
-    protected $allowTypes = array(
+    protected $allowTypes = [
                              'image',
                              'voice',
                              'video',
                              'file',
                              'news',
-                            );
+                            ];
 
     /**
      * Http对象
@@ -55,6 +54,7 @@ class Media
     protected $forever = false;
 
     protected $agentId = null;
+
     /**
      * constructor.
      *
@@ -89,7 +89,7 @@ class Media
      *
      * @return string
      */
-    protected function upload($type, $path, $params = array())
+    protected function upload($type, $path, $params = [])
     {
         if (!file_exists($path) || !is_readable($path)) {
             throw new Exception("文件不存在或不可读 '$path'");
@@ -99,13 +99,11 @@ class Media
             throw new Exception("错误的媒体类型 '{$type}'");
         }
 
+        $queries = ['type' => $type, 'agentid' => $this->agentId];
 
-
-        $queries = array('type' => $type, 'agentid' => $this->agentId);
-
-        $options = array(
-                    'files' => array('media' => $path),
-                   );
+        $options = [
+                    'files' => ['media' => $path],
+                   ];
 
         $url = $this->getUrl($type, $queries);
 
@@ -117,13 +115,14 @@ class Media
             return $response;
         }
 
-        $response = Arr::only($response, array('media_id', 'thumb_media_id'));
+        $response = Arr::only($response, ['media_id', 'thumb_media_id']);
 
         return array_pop($response);
     }
 
     /**
      * 新增图文素材.
+     *
      * @param @agentId 应用id
      * @param array $articles
      *
@@ -131,7 +130,7 @@ class Media
      */
     public function news($agentId, array $articles)
     {
-        $params = array('agentid'=> 5, 'mpnews'=>array('articles'=>$articles));
+        $params = ['agentid'=> 5, 'mpnews'=>['articles'=>$articles]];
 
         $response = $this->http->jsonPost(self::API_FOREVER_NEWS_UPLOAD, $params);
 
@@ -149,11 +148,11 @@ class Media
      */
     public function updateNews($mediaId, array $articles, $agentId = 0)
     {
-        $params = array(
+        $params = [
                    'media_id' => $mediaId,
-                   'agentid' => $agentId,
-                   'mpnews'=>array('articles'=>$articles),
-                  );
+                   'agentid'  => $agentId,
+                   'mpnews'   => ['articles'=>$articles],
+                  ];
 
         return $this->http->jsonPost(self::API_FOREVER_NEWS_UPDATE, $params);
     }
@@ -167,7 +166,7 @@ class Media
      */
     public function delete($mediaId)
     {
-        return $this->http->get(self::API_FOREVER_DELETE, array('media_id' => $mediaId, 'agentid' => $this->agentId));
+        return $this->http->get(self::API_FOREVER_DELETE, ['media_id' => $mediaId, 'agentid' => $this->agentId]);
     }
 
     /**
@@ -178,7 +177,7 @@ class Media
      *
      * @return array|int
      */
-    public function stats($type = null, $agentId)
+    public function stats($type, $agentId)
     {
         $response = $this->http->get(self::API_FOREVER_COUNT.'?agentid='.$agentId);
 
@@ -210,30 +209,32 @@ class Media
      *
      * @return array
      */
-    public function lists($type, $offset = 0, $count = 20, $agentId)
+    public function lists($type, $offset, $count, $agentId)
     {
-        $params = array(
-                   'type' => $type,
-                   'offset' => intval($offset),
-                   'count' => min(20, $count),
+        $params = [
+                   'type'    => $type,
+                   'offset'  => intval($offset),
+                   'count'   => min(20, $count),
                    'agentid' => $agentId,
-                  );
+                  ];
 
         return $this->http->jsonPost(self::API_FOREVER_LIST, $params);
     }
 
     /**
-     * 上传图文消息内的图片
-     * @param  string $filename 图片路径
+     * 上传图文消息内的图片.
+     *
+     * @param string $filename 图片路径
+     *
      * @return string
      */
-    public function uploadImg( $filename)
+    public function uploadImg($filename)
     {
-        $options = array(
-                    'files' => array('media' => $filename),
-                   );
+        $options = [
+                    'files' => ['media' => $filename],
+                   ];
 
-        $response = $this->http->jsonPost(self::API_UPLOAD_IMG, $params = array(), $options);
+        $response = $this->http->jsonPost(self::API_UPLOAD_IMG, $params = [], $options);
 
         return $response['url'];
     }
@@ -248,7 +249,7 @@ class Media
      */
     public function download($mediaId, $filename = '')
     {
-        $params = array('media_id' => $mediaId, 'agentid' => $this->agentId);
+        $params = ['media_id' => $mediaId, 'agentid' => $this->agentId];
 
         $api = $this->forever ? self::API_FOREVER_GET : self::API_TEMPORARY_GET;
 
@@ -281,12 +282,12 @@ class Media
      */
     public function __call($method, $args)
     {
-        $args = array(
+        $args = [
                  $method,
                  array_shift($args),
-                );
+                ];
 
-        return call_user_func_array(array(__CLASS__, 'upload'), $args);
+        return call_user_func_array([__CLASS__, 'upload'], $args);
     }
 
     /**
@@ -297,7 +298,7 @@ class Media
      *
      * @return string
      */
-    protected function getUrl($type, $queries = array())
+    protected function getUrl($type, $queries = [])
     {
         if ($type === 'news') {
             $api = self::API_FOREVER_NEWS_UPLOAD;

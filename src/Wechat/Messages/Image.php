@@ -3,22 +3,21 @@
 namespace Stoneworld\Wechat\Messages;
 
 /**
- * 图片消息
+ * 图片消息.
  *
  * @property string $media_id
  */
 class Image extends BaseMessage
 {
-
     /**
-     * 属性
+     * 属性.
      *
      * @var array
      */
-    protected $properties = array('media_id');
+    protected $properties = ['media_id'];
 
     /**
-     * 设置音乐消息封面图
+     * 设置音乐消息封面图.
      *
      * @param string $mediaId
      *
@@ -32,30 +31,30 @@ class Image extends BaseMessage
     }
 
     /**
-     * 生成主动消息数组
+     * 生成主动消息数组.
      *
      * @return array
      */
     public function toStaff()
     {
-        return array(
-                'image' => array(
+        return [
+                'image' => [
                             'media_id' => $this->media_id,
-                           ),
-               );
+                           ],
+               ];
     }
 
     /**
-     * 生成回复消息数组
+     * 生成回复消息数组.
      *
      * @return array
      */
     public function toReply()
     {
-        return array(
-                'Image' => array(
+        return [
+                'Image' => [
                             'MediaId' => $this->media_id,
-                           ),
-               );
+                           ],
+               ];
     }
 }

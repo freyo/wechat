@@ -24,7 +24,7 @@ class SignGenerator extends MagicAttributes
      */
     protected $sortAfterCallback;
 
-    public function __construct(array $params = array())
+    public function __construct(array $params = [])
     {
         $this->attributes = $params;
     }
@@ -53,7 +53,7 @@ class SignGenerator extends MagicAttributes
     public function setHashType($hashType)
     {
         $type = strtolower($hashType);
-        if (!in_array($type, array('md5', 'sha1'), true)) {
+        if (!in_array($type, ['md5', 'sha1'], true)) {
             throw new \Exception(sprintf('Invalid Hash Type %s', $hashType));
         }
         $this->hashType = $type;

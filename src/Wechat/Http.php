@@ -10,9 +10,8 @@ use Stoneworld\Wechat\Utils\JSON;
  */
 class Http extends HttpClient
 {
-
     /**
-     * token
+     * token.
      *
      * @var AccessToken
      */
@@ -26,14 +25,14 @@ class Http extends HttpClient
     protected $json = false;
 
     /**
-     * 缓存类
+     * 缓存类.
      *
      * @var Cache
      */
     protected $cache;
 
     /**
-     * constructor
+     * constructor.
      *
      * @param AccessToken $token
      */
@@ -44,7 +43,7 @@ class Http extends HttpClient
     }
 
     /**
-     * 设置请求access_token
+     * 设置请求access_token.
      *
      * @param AccessToken $token
      */
@@ -64,11 +63,11 @@ class Http extends HttpClient
      *
      * @return array | boolean
      */
-    public function request($url, $method = self::GET, $params = array(), $options = array(), $retry = 1)
+    public function request($url, $method = self::GET, $params = [], $options = [], $retry = 1)
     {
         if ($this->token) {
             $url = preg_replace('/[\?&]access_token=.*?/i', '', $url);
-            $url .= (stripos($url, '?') ? '&' : '?').'access_token='. $this->token->getToken();
+            $url .= (stripos($url, '?') ? '&' : '?').'access_token='.$this->token->getToken();
         }
 
         $method = strtoupper($method);
@@ -102,7 +101,7 @@ class Http extends HttpClient
             }
 
             // access token 超时重试处理
-            if ($this->token && in_array($contents['errcode'], array('40001', '42001')) && $retry > 0) {
+            if ($this->token && in_array($contents['errcode'], ['40001', '42001']) && $retry > 0) {
                 // force refresh
                 $this->token->getToken(true);
 
@@ -112,7 +111,7 @@ class Http extends HttpClient
             throw new Exception("[{$contents['errcode']}] ".$contents['errmsg'], $contents['errcode']);
         }
 
-        if ($contents === array('errcode' => '0', 'errmsg' => 'ok')) {
+        if ($contents === ['errcode' => '0', 'errmsg' => 'ok']) {
             return true;
         }
 
@@ -120,7 +119,7 @@ class Http extends HttpClient
     }
 
     /**
-     * 魔术调用
+     * 魔术调用.
      *
      * @param string $method
      * @param array  $args
@@ -134,7 +133,7 @@ class Http extends HttpClient
             $this->json = true;
         }
 
-        $result = call_user_func_array(array($this, $method), $args);
+        $result = call_user_func_array([$this, $method], $args);
 
         return $result;
     }

@@ -36,10 +36,10 @@ class Url
      */
     public function short($url)
     {
-        $params = array(
-                   'action' => 'long2short',
+        $params = [
+                   'action'   => 'long2short',
                    'long_url' => $url,
-                  );
+                  ];
 
         $response = $this->http->jsonPost(self::API_SHORT_URL, $params);
 

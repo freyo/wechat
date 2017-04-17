@@ -5,16 +5,16 @@ namespace Stoneworld\Wechat;
 use Closure;
 
 /**
- * 菜单
+ * 菜单.
  *
  * @property array $sub_button
  */
 class Menu
 {
-    const API_CREATE             = 'https://qyapi.weixin.qq.com/cgi-bin/menu/create';
-    const API_GET                = 'https://qyapi.weixin.qq.com/cgi-bin/menu/get';
-    const API_DELETE             = 'https://qyapi.weixin.qq.com/cgi-bin/menu/delete';
-    const API_QUERY              = 'https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info';
+    const API_CREATE = 'https://qyapi.weixin.qq.com/cgi-bin/menu/create';
+    const API_GET = 'https://qyapi.weixin.qq.com/cgi-bin/menu/get';
+    const API_DELETE = 'https://qyapi.weixin.qq.com/cgi-bin/menu/delete';
+    const API_QUERY = 'https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info';
 
     /**
      * Http对象
@@ -24,7 +24,7 @@ class Menu
     protected $http;
 
     /**
-     * constructor
+     * constructor.
      *
      * @param string $appId
      * @param string $appSecret
@@ -35,7 +35,7 @@ class Menu
     }
 
     /**
-     * 设置菜单
+     * 设置菜单.
      *
      * @return bool
      */
@@ -43,13 +43,13 @@ class Menu
     {
         $menus = $this->extractMenus($menus);
 
-        $this->http->jsonPost(self::API_CREATE.'?agentid='.$agentId, array('button' => $menus));
+        $this->http->jsonPost(self::API_CREATE.'?agentid='.$agentId, ['button' => $menus]);
 
         return true;
     }
 
     /**
-     * 获取菜单
+     * 获取菜单.
      *
      * @return array
      */
@@ -57,11 +57,11 @@ class Menu
     {
         $menus = $this->http->get(self::API_GET.'?agentid='.$agentId);
 
-        return empty($menus['menu']['button']) ? array() : $menus['menu']['button'];
+        return empty($menus['menu']['button']) ? [] : $menus['menu']['button'];
     }
 
     /**
-     * 删除菜单
+     * 删除菜单.
      *
      * @return bool
      */
@@ -73,7 +73,7 @@ class Menu
     }
 
     /**
-     * 转menu为数组
+     * 转menu为数组.
      *
      * @param mixed $menus
      *

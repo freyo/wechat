@@ -16,20 +16,21 @@ class Broadcast
     protected $http;
 
     /**
-     * 消息
+     * 消息.
      *
      * @var \Stoneworld\Wechat\Messages\BaseMessage;
      */
     protected $message;
 
     /**
-     * 应用id
+     * 应用id.
+     *
      * @var int
      */
     protected $agentid;
 
     /**
-     * constructor
+     * constructor.
      *
      * @param string $appId
      * @param string $appSecret
@@ -40,18 +41,21 @@ class Broadcast
     }
 
     /**
-     * 群发来源应用
-     * @param  int $agentId
-     * @return 
+     * 群发来源应用.
+     *
+     * @param int $agentId
+     *
+     * @return
      */
     public function fromAgentId($agentId)
     {
         $this->agentid = $agentId;
+
         return $this;
     }
 
     /**
-     * 准备消息
+     * 准备消息.
      *
      * @param \Stoneworld\Wechat\Messages\BaseMessage $message
      *
@@ -71,18 +75,20 @@ class Broadcast
     }
 
     /**
-     * 消息群发
-     * @param  string|array $user    指定用户群
-     * @param  string|array $toParty 指定部门
-     * @param  string|array $toTag   指定标签 
-     * @return 
+     * 消息群发.
+     *
+     * @param string|array $user    指定用户群
+     * @param string|array $toParty 指定部门
+     * @param string|array $toTag   指定标签
+     *
+     * @return
      */
     public function to($user = '@all', $toParty = null, $toTag = null)
     {
         if (empty($this->message)) {
             throw new Exception('未设置要发送的消息');
         }
-        
+
         $this->message->agentid = $this->agentid;
 
         $this->message->touser = is_array($user) ? implode('|', $user) : $user;
@@ -95,8 +101,9 @@ class Broadcast
     }
 
     /**
-     * 群发应用所见所有人
-     * @return 
+     * 群发应用所见所有人.
+     *
+     * @return
      */
     public function toAll()
     {
@@ -105,8 +112,10 @@ class Broadcast
 
     /**
      * 按部门发送
-     * @param  int|array $toParty array(1, 2, 3)
-     * @return 
+     *
+     * @param int|array $toParty array(1, 2, 3)
+     *
+     * @return
      */
     public function toParty($toParty)
     {
@@ -115,12 +124,13 @@ class Broadcast
 
     /**
      * 按标签发送
-     * @param  int|array $toTag
+     *
+     * @param int|array $toTag
+     *
      * @return
      */
     public function toTag($toTag)
     {
         return $this->to($user = '', $toParty = '', $toTag = $toTag);
     }
-
 }

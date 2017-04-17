@@ -40,11 +40,11 @@ class Soter
      */
     public function verify($openid, $json_string, $json_signature)
     {
-        $params = array(
+        $params = [
             'openid'         => $openid,
             'json_string'    => $json_string,
-            'json_signature' => $json_signature
-        );
+            'json_signature' => $json_signature,
+        ];
 
         $response = $this->http->jsonPost(self::API_VERIFY, $params);
 
