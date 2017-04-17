@@ -14,14 +14,14 @@ abstract class MagicAttributes
      *
      * @var array
      */
-    protected $attributes = array();
+    protected $attributes = [];
 
     /**
      * 方法名转换缓存.
      *
      * @var array
      */
-    protected static $snakeCache = array();
+    protected static $snakeCache = [];
 
     /**
      * 设置属性.

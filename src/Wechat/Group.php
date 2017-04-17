@@ -3,14 +3,14 @@
 namespace Stoneworld\Wechat;
 
 /**
- * 用户组
+ * 用户组.
  */
 class Group
 {
-    const API_GET                 = 'https://qyapi.weixin.qq.com/cgi-bin/department/list';
-    const API_CREATE              = 'https://qyapi.weixin.qq.com/cgi-bin/department/create';
-    const API_UPDATE              = 'https://qyapi.weixin.qq.com/cgi-bin/department/update';
-    const API_DELETE              = 'https://qyapi.weixin.qq.com/cgi-bin/department/delete';
+    const API_GET = 'https://qyapi.weixin.qq.com/cgi-bin/department/list';
+    const API_CREATE = 'https://qyapi.weixin.qq.com/cgi-bin/department/create';
+    const API_UPDATE = 'https://qyapi.weixin.qq.com/cgi-bin/department/update';
+    const API_DELETE = 'https://qyapi.weixin.qq.com/cgi-bin/department/delete';
 
     /**
      * Http对象
@@ -20,7 +20,7 @@ class Group
     protected $http;
 
     /**
-     * constructor
+     * constructor.
      *
      * @param string $appId
      * @param string $appSecret
@@ -31,21 +31,23 @@ class Group
     }
 
     /**
-     * 创建部门
-     * @param  string  $name     部门名称
-     * @param  integer $parentid 父亲部门id
-     * @param  integer $order    在父部门中的次序值
-     * @param  integer $id       部门id （可以自动生成）
-     * @return integer           部门id
+     * 创建部门.
+     *
+     * @param string $name     部门名称
+     * @param int    $parentid 父亲部门id
+     * @param int    $order    在父部门中的次序值
+     * @param int    $id       部门id （可以自动生成）
+     *
+     * @return int 部门id
      */
     public function create($name, $parentid = 1, $order = null, $id = null)
     {
-        $params = array(
+        $params = [
                    'name'       => $name,
                    'parentid'   => $parentid,
                    'order'      => $order,
-                   'id'         => $id
-                );
+                   'id'         => $id,
+                ];
 
         $response = $this->http->jsonPost(self::API_CREATE, $params);
 
@@ -53,7 +55,7 @@ class Group
     }
 
     /**
-     * 获取所有部门
+     * 获取所有部门.
      *
      * @return array
      */
@@ -65,27 +67,29 @@ class Group
     }
 
     /**
-     * 更新部门
-     * @param  string  $name     部门名称
-     * @param  integer $parentid 父亲部门id
-     * @param  integer $order    在父部门中的次序值
-     * @param  integer $id       部门id （可以自动生成）
-     * @return integer           部门id
+     * 更新部门.
+     *
+     * @param string $name     部门名称
+     * @param int    $parentid 父亲部门id
+     * @param int    $order    在父部门中的次序值
+     * @param int    $id       部门id （可以自动生成）
+     *
+     * @return int 部门id
      */
     public function update($id, $name, $parentid = 1, $order = null)
     {
-        $params = array(
+        $params = [
                    'name'       => $name,
                    'parentid'   => $parentid,
                    'order'      => $order,
-                   'id'         => $id
-                );
+                   'id'         => $id,
+                ];
 
         return $this->http->jsonPost(self::API_UPDATE, $params);
     }
 
     /**
-     * 删除部门
+     * 删除部门.
      *
      * @param int $id
      *
@@ -95,5 +99,4 @@ class Group
     {
         return $this->http->get(self::API_DELETE.'?id='.$id);
     }
-
 }

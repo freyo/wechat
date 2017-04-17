@@ -5,59 +5,52 @@ namespace Stoneworld\Wechat;
 use Stoneworld\Wechat\Utils\XML;
 
 /**
- * 加密解密
+ * 加密解密.
  */
 class Crypt
 {
-
     /**
-     * 应用ID
+     * 应用ID.
      *
      * @var string
      */
     protected $appId;
 
     /**
-     * 应用token
+     * 应用token.
      *
      * @var string
      */
     protected $token;
 
     /**
-     * 加密用的AESkey
+     * 加密用的AESkey.
      *
      * @var string
      */
     protected $AESKey;
 
     /**
-     * 块大小
+     * 块大小.
      *
      * @var int
      */
     protected $blockSize;
 
     const ERROR_INVALID_SIGNATURE = -40001; // 校验签名失败
-    const ERROR_PARSE_XML         = -40002; // 解析xml失败
-    const ERROR_CALC_SIGNATURE    = -40003; // 计算签名失败
-    const ERROR_INVALID_AESKEY    = -40004; // 不合法的AESKey
-    const ERROR_INVALID_APPID     = -40005; // 校验AppID失败
-    const ERROR_ENCRYPT_AES       = -40006; // AES加密失败
-    const ERROR_DECRYPT_AES       = -40007; // AES解密失败
-    const ERROR_INVALID_XML       = -40008; // 公众平台发送的xml不合法
-    const ERROR_BASE64_ENCODE     = -40009; // Base64编码失败
-    const ERROR_BASE64_DECODE     = -40010; // Base64解码失败
-    const ERROR_XML_BUILD         = -40011; // 公众帐号生成回包xml失败
-
-
-
-
-
-
+    const ERROR_PARSE_XML = -40002; // 解析xml失败
+    const ERROR_CALC_SIGNATURE = -40003; // 计算签名失败
+    const ERROR_INVALID_AESKEY = -40004; // 不合法的AESKey
+    const ERROR_INVALID_APPID = -40005; // 校验AppID失败
+    const ERROR_ENCRYPT_AES = -40006; // AES加密失败
+    const ERROR_DECRYPT_AES = -40007; // AES解密失败
+    const ERROR_INVALID_XML = -40008; // 公众平台发送的xml不合法
+    const ERROR_BASE64_ENCODE = -40009; // Base64编码失败
+    const ERROR_BASE64_DECODE = -40010; // Base64解码失败
+    const ERROR_XML_BUILD = -40011; // 公众帐号生成回包xml失败
 
     /**
-     * constructor
+     * constructor.
      *
      * @param string $appId
      * @param string $token
@@ -73,10 +66,10 @@ class Crypt
             echo 'Invalid AESKey.';
         }
 
-        $this->appId     = $appId;
-        $this->token     = $token;
-        $this->AESKey    = base64_decode($encodingAESKey.'=', true);
-        $this->blockSize = 32;// mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $this->appId = $appId;
+        $this->token = $token;
+        $this->AESKey = base64_decode($encodingAESKey.'=', true);
+        $this->blockSize = 32; // mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
     }
 
     /**
@@ -85,7 +78,7 @@ class Crypt
      *    <li>对要发送的消息进行AES-CBC加密</li>
      *    <li>生成安全签名</li>
      *    <li>将消息密文和安全签名打包成xml格式</li>
-     * </ol>
+     * </ol>.
      *
      * @param string $xml       公众平台待回复用户的消息，xml格式的字符串
      * @param string $nonce     随机串，可以自己生成，也可以用URL参数的nonce
@@ -104,12 +97,12 @@ class Crypt
         //生成安全签名
         $signature = $this->getSHA1($this->token, $timestamp, $nonce, $encrypt);
 
-        $response = array(
+        $response = [
                      'Encrypt'      => $encrypt,
                      'MsgSignature' => $signature,
                      'TimeStamp'    => $timestamp,
                      'Nonce'        => $nonce,
-                    );
+                    ];
 
         //生成响应xml
         return XML::build($response);
@@ -121,7 +114,7 @@ class Crypt
      *    <li>利用收到的密文生成安全签名，进行签名验证</li>
      *    <li>若验证通过，则提取xml中的加密消息</li>
      *    <li>对消息进行解密</li>
-     * </ol>
+     * </ol>.
      *
      * @param string $msgSignature 签名串，对应URL参数的msg_signature
      * @param string $nonce        随机串，对应URL参数的nonce
@@ -139,7 +132,7 @@ class Crypt
             echo 'Invalid xml.';
         }
 
-        $encrypted  = $array['Encrypt'];
+        $encrypted = $array['Encrypt'];
 
         //验证安全签名
         $signature = $this->getSHA1($this->token, $timestamp, $nonce, $encrypted);
@@ -152,7 +145,7 @@ class Crypt
     }
 
     /**
-     * 对明文进行加密
+     * 对明文进行加密.
      *
      * @param string $text  需要加密的明文
      * @param string $appId app id
@@ -164,15 +157,15 @@ class Crypt
         try {
             //获得16位随机字符串，填充到明文之前
             $random = $this->getRandomStr();
-            $text   = $random.pack('N', strlen($text)).$text.$appId;
+            $text = $random.pack('N', strlen($text)).$text.$appId;
 
             // 网络字节序
             // $size   = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
             $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-            $iv     = substr($this->AESKey, 0, 16);
+            $iv = substr($this->AESKey, 0, 16);
 
             //使用自定义的填充方式对明文进行补位填充
-            $text   = $this->encode($text);
+            $text = $this->encode($text);
 
             mcrypt_generic_init($module, $this->AESKey, $iv);
 
@@ -189,7 +182,7 @@ class Crypt
     }
 
     /**
-     * 对密文进行解密
+     * 对密文进行解密.
      *
      * @param string $encrypted 需要解密的密文
      * @param string $appId     app id
@@ -201,8 +194,8 @@ class Crypt
         try {
             //使用BASE64对需要解密的字符串进行解码
             $ciphertext = base64_decode($encrypted, true);
-            $module     = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-            $iv         = substr($this->AESKey, 0, 16);
+            $module = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+            $iv = substr($this->AESKey, 0, 16);
 
             mcrypt_generic_init($module, $this->AESKey, $iv);
 
@@ -223,10 +216,10 @@ class Crypt
                 return '';
             }
 
-            $content   = substr($result, 16, strlen($result));
-            $listLen   = unpack('N', substr($content, 0, 4));
-            $xmlLen    = $listLen[1];
-            $xml       = substr($content, 4, $xmlLen);
+            $content = substr($result, 16, strlen($result));
+            $listLen = unpack('N', substr($content, 0, 4));
+            $xmlLen = $listLen[1];
+            $xml = substr($content, 4, $xmlLen);
             $fromAppId = trim(substr($content, $xmlLen + 4));
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), self::ERROR_INVALID_XML);
@@ -240,7 +233,7 @@ class Crypt
     }
 
     /**
-     * 随机生成16位字符串
+     * 随机生成16位字符串.
      *
      * @return string 生成的字符串
      */
@@ -250,7 +243,7 @@ class Crypt
     }
 
     /**
-     * 生成SHA1签名
+     * 生成SHA1签名.
      *
      * @return string
      */
@@ -267,7 +260,7 @@ class Crypt
     }
 
     /**
-     * 对需要加密的明文进行填充补位
+     * 对需要加密的明文进行填充补位.
      *
      * @param string $text 需要进行填充补位操作的明文
      *
@@ -293,7 +286,7 @@ class Crypt
     }
 
     /**
-     * 对解密后的明文进行补位删除
+     * 对解密后的明文进行补位删除.
      *
      * @param string $decrypted 解密后的明文
      *

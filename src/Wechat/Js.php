@@ -53,9 +53,9 @@ class Js
      * 获取数组形式的配置.
      *
      * @param array $APIs
-     * @param bool $debug
-     * @param bool $beta
-     * @param bool $isAdminGroup
+     * @param bool  $debug
+     * @param bool  $beta
+     * @param bool  $isAdminGroup
      *
      * @return array
      */
@@ -68,20 +68,20 @@ class Js
      * 获取JSSDK的配置数组.
      *
      * @param array $APIs
-     * @param bool $debug
-     * @param bool $json
-     * @param bool $isAdminGroup
+     * @param bool  $debug
+     * @param bool  $json
+     * @param bool  $isAdminGroup
      *
      * @return string|array
      */
     public function config(array $APIs, $debug = false, $beta = false, $json = true, $isAdminGroup = false)
     {
         $signPackage = $isAdminGroup ? $this->getSignaturePackage(null, null, null, true) : $this->getSignaturePackage();
-        $base = array(
+        $base = [
             'debug' => $debug,
-            'beta' => $beta,
-        );
-        $config = $isAdminGroup ? $signPackage : array_merge($base, $signPackage, array('jsApiList' => $APIs));
+            'beta'  => $beta,
+        ];
+        $config = $isAdminGroup ? $signPackage : array_merge($base, $signPackage, ['jsApiList' => $APIs]);
 
         return $json ? JSON::encode($config) : $config;
     }
@@ -91,8 +91,8 @@ class Js
      *
      * @param string $url
      * @param string $nonce
-     * @param int $timestamp
-     * @param bool $isAdminGroup
+     * @param int    $timestamp
+     * @param bool   $isAdminGroup
      *
      * @return array
      */
@@ -103,18 +103,18 @@ class Js
         $timestamp = $timestamp ? $timestamp : time();
         $ticket = $isAdminGroup ? $this->getGroupTicket() : $this->getTicket();
 
-        $sign = $isAdminGroup ? array(
-            'groupId' => $ticket['group_id'],
+        $sign = $isAdminGroup ? [
+            'groupId'   => $ticket['group_id'],
             'timestamp' => $timestamp,
-            'nonceStr' => $nonce,
+            'nonceStr'  => $nonce,
             'signature' => $this->getSignature($ticket['ticket'], $nonce, $timestamp, $url, true),
-        ) : array(
-            'appId' => $this->appId,
-            'nonceStr' => $nonce,
+        ] : [
+            'appId'     => $this->appId,
+            'nonceStr'  => $nonce,
             'timestamp' => $timestamp,
-            'url' => $url,
+            'url'       => $url,
             'signature' => $this->getSignature($ticket, $nonce, $timestamp, $url),
-        );
+        ];
 
         return $sign;
     }
@@ -164,7 +164,7 @@ class Js
      */
     public function getGroupTicket()
     {
-        $key = 'stoneworld.wechat.group_ticket.' . $this->appId;
+        $key = 'stoneworld.wechat.group_ticket.'.$this->appId;
 
         // for php 5.3
         $appId = $this->appId;
@@ -193,7 +193,7 @@ class Js
      */
     public function getTicket()
     {
-        $key = 'stoneworld.wechat.jsapi_ticket.' . $this->appId;
+        $key = 'stoneworld.wechat.jsapi_ticket.'.$this->appId;
 
         // for php 5.3
         $appId = $this->appId;
@@ -220,9 +220,9 @@ class Js
      *
      * @param string $ticket
      * @param string $nonce
-     * @param int $timestamp
+     * @param int    $timestamp
      * @param string $url
-     * @param bool $isAdminGroup
+     * @param bool   $isAdminGroup
      *
      * @return string
      */

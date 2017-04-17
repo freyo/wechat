@@ -6,7 +6,7 @@ use Stoneworld\Wechat\Utils\MagicAttributes;
 use Stoneworld\Wechat\Utils\XML;
 
 /**
- * 消息基类
+ * 消息基类.
  *
  * @property string      $from
  * @property string      $to
@@ -21,29 +21,28 @@ use Stoneworld\Wechat\Utils\XML;
  */
 abstract class BaseMessage extends MagicAttributes
 {
-
     /**
-     * 允许的属性
+     * 允许的属性.
      *
      * @var array
      */
-    protected $properties = array();
+    protected $properties = [];
 
     /**
-     * 基础属性
+     * 基础属性.
      *
      * @var array
      */
-    protected $baseProperties = array(
+    protected $baseProperties = [
                                  'from',
                                  'to',
                                  'to_group',
                                  'to_all',
                                  'staff',
-                                );
+                                ];
 
     /**
-     * 生成用于主动推送的数据
+     * 生成用于主动推送的数据.
      *
      * @return array
      */
@@ -53,19 +52,19 @@ abstract class BaseMessage extends MagicAttributes
             throw new \Exception(__CLASS__.'未实现此方法：toStaff()');
         }
 
-        $base = array(
+        $base = [
                  'touser'  => $this->to,
                  'msgtype' => $this->getDefaultMessageType(),
-                );
+                ];
         if (!empty($this->staff)) {
-            $base['customservice'] = array('kf_account' => $this->staff);
+            $base['customservice'] = ['kf_account' => $this->staff];
         }
 
         return array_merge($base, $this->toStaff());
     }
 
     /**
-     * 生成用于回复的数据
+     * 生成用于回复的数据.
      *
      * @return array
      */
@@ -75,18 +74,18 @@ abstract class BaseMessage extends MagicAttributes
             throw new \Exception(__CLASS__.'未实现此方法：toReply()');
         }
 
-        $base = array(
+        $base = [
                  'ToUserName'   => $this->to,
                  'FromUserName' => $this->from,
                  'CreateTime'   => time(),
                  'MsgType'      => $this->getDefaultMessageType(),
-                );
+                ];
 
         return XML::build(array_merge($base, $this->toReply()));
     }
 
     /**
-     * 生成通过群发的数据
+     * 生成通过群发的数据.
      *
      * @return array
      */
@@ -95,28 +94,28 @@ abstract class BaseMessage extends MagicAttributes
         if (!method_exists($this, 'toStaff')) {
             throw new \Exception(__CLASS__.'未实现此方法：toStaff()');
         }
-        $group = array(
-                'touser' => $this->touser,
+        $group = [
+                'touser'  => $this->touser,
                 'toparty' => $this->toparty,
                 'totag'   => $this->totag,
                 'agentid' => $this->agentid,
-            );
-        $base = array(
-            'safe' => 0,
+            ];
+        $base = [
+            'safe'    => 0,
             'msgtype' => $this->getDefaultMessageType(),
-        );
+        ];
 
         return array_merge($group, $this->toStaff(), $base);
     }
 
     /**
-     * 生成通过群发预览的数据
+     * 生成通过群发预览的数据.
      *
      * @param $type
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     public function buildForBroadcastPreview($type)
     {
@@ -124,16 +123,16 @@ abstract class BaseMessage extends MagicAttributes
             throw new \Exception(__CLASS__.'未实现此方法：toStaff()');
         }
 
-        $base = array(
-            $type => $this->to,
+        $base = [
+            $type     => $this->to,
             'msgtype' => $this->getDefaultMessageType(),
-        );
+        ];
 
         return array_merge($base, $this->toStaff());
     }
 
     /**
-     * 获取默认的消息类型名称
+     * 获取默认的消息类型名称.
      *
      * @return string
      */

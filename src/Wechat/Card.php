@@ -43,7 +43,7 @@ class Card
     const CARD_STATUS_VERIFY_FAIL = 'CARD_STATUS_VERIFY_FAIL';   //审核失败
     const CARD_STATUS_VERIFY_OK = 'CARD_STATUS_VERIFY_OK';     //通过审核
     const CARD_STATUS_USER_DELETE = 'CARD_STATUS_USER_DELETE';   //卡券被商户删除
-    const CARD_STATUS_USER_DISPATCH = 'CARD_STATUS_USER_DISPATCH'; //在公众平台投放过的卡券 
+    const CARD_STATUS_USER_DISPATCH = 'CARD_STATUS_USER_DISPATCH'; //在公众平台投放过的卡券
 
     const API_CREATE = 'https://qyapi.weixin.qq.com/cgi-bin/card/create';  // 创建卡券
     const API_DELETE = 'https://qyapi.weixin.qq.com/cgi-bin/card/delete';  // 删除卡券
@@ -100,21 +100,21 @@ class Card
      * 生成 js添加到卡包 需要的 card_list 项.
      *
      * @param string $cardId
-     * @param array $extension
+     * @param array  $extension
      *
      * @return string
      */
-    public function attachExtension($cardId, array $extension = array())
+    public function attachExtension($cardId, array $extension = [])
     {
         $timestamp = time();
 
-        $ext = array(
-            'code' => Arr::get($extension, 'code'),
-            'openid' => Arr::get($extension, 'openid', Arr::get($extension, 'open_id')),
+        $ext = [
+            'code'      => Arr::get($extension, 'code'),
+            'openid'    => Arr::get($extension, 'openid', Arr::get($extension, 'open_id')),
             'timestamp' => $timestamp,
-            'outer_id' => Arr::get($extension, 'outer_id'),
-            'balance' => Arr::get($extension, 'balance'),
-        );
+            'outer_id'  => Arr::get($extension, 'outer_id'),
+            'balance'   => Arr::get($extension, 'balance'),
+        ];
 
         $ext['signature'] = $this->getSignature(
             $this->getTicket(),
@@ -125,31 +125,31 @@ class Card
             $ext['balance']
         );
 
-        return array(
-            'cardId' => $cardId,
+        return [
+            'cardId'  => $cardId,
             'cardExt' => JSON::encode($ext),
-        );
+        ];
     }
 
     /**
      * 创建卡券.
      *
-     * @param array $base
-     * @param array $properties
+     * @param array  $base
+     * @param array  $properties
      * @param string $type
      *
      * @return string
      */
-    public function create(array $base, array $properties = array(), $type = self::TYPE_GENERAL_COUPON)
+    public function create(array $base, array $properties = [], $type = self::TYPE_GENERAL_COUPON)
     {
         $key = strtolower($type);
-        $card = array_merge(array('base_info' => $base), $properties);
-        $params = array(
-            'card' => array(
+        $card = array_merge(['base_info' => $base], $properties);
+        $params = [
+            'card' => [
                 'card_type' => $type,
-                $key => $card,
-            ),
-        );
+                $key        => $card,
+            ],
+        ];
 
         $result = $this->http->jsonPost(self::API_CREATE, $params);
 
@@ -165,7 +165,7 @@ class Card
      */
     public function get($cardId)
     {
-        $params = array('card_id' => $cardId);
+        $params = ['card_id' => $cardId];
 
         $result = $this->http->jsonPost(self::API_GET, $params);
 
@@ -175,19 +175,19 @@ class Card
     /**
      * 批量获取卡券列表.
      *
-     * @param int $offset
-     * @param int $count
+     * @param int   $offset
+     * @param int   $count
      * @param array $statusList
      *
      * @return array
      */
-    public function lists($offset = 0, $count = 10, $statusList = array())
+    public function lists($offset = 0, $count = 10, $statusList = [])
     {
-        $params = array(
-            'offset' => $offset,
-            'count' => $count,
+        $params = [
+            'offset'      => $offset,
+            'count'       => $count,
             'status_list' => $statusList,
-        );
+        ];
 
         $result = $this->http->jsonPost(self::API_LIST, $params);
 
@@ -197,7 +197,7 @@ class Card
     /**
      * 核销
      *
-     * @param string $code 要消耗序列号
+     * @param string $code   要消耗序列号
      * @param string $cardId 卡券 ID。创建卡券时 use_custom_code 填写 true 时必填。
      *                       非自定义 code 不必填写。
      *
@@ -205,10 +205,10 @@ class Card
      */
     public function consume($code, $cardId = null)
     {
-        $params = array(
-            'code' => $code,
+        $params = [
+            'code'    => $code,
             'card_id' => $cardId,
-        );
+        ];
 
         return new Bag($this->http->jsonPost(self::API_CONSUME, $params));
     }
@@ -222,7 +222,7 @@ class Card
      */
     public function delete($cardId)
     {
-        $params = array('card_id' => $cardId);
+        $params = ['card_id' => $cardId];
 
         return $this->http->jsonPost(self::API_DELETE, $params);
     }
@@ -231,7 +231,7 @@ class Card
      * 修改库存.
      *
      * @param string $cardId
-     * @param int $amount
+     * @param int    $amount
      *
      * @return bool
      */
@@ -243,10 +243,10 @@ class Card
 
         $key = $amount > 0 ? 'increase_stock_value' : 'reduce_stock_value';
 
-        $params = array(
+        $params = [
             'card_id' => $cardId,
-            $key => abs($amount),
-        );
+            $key      => abs($amount),
+        ];
 
         return $this->http->jsonPost(self::API_UPDATE_STOCK, $params);
     }
@@ -255,7 +255,7 @@ class Card
      * 增加库存.
      *
      * @param string $cardId
-     * @param int $amount
+     * @param int    $amount
      *
      * @return bool
      */
@@ -268,7 +268,7 @@ class Card
      * 减少库存.
      *
      * @param string $cardId
-     * @param int $amount
+     * @param int    $amount
      *
      * @return bool
      */
@@ -287,10 +287,10 @@ class Card
      */
     public function getCode($code, $cardId = null)
     {
-        $params = array(
-            'code' => $code,
+        $params = [
+            'code'    => $code,
             'card_id' => $cardId,
-        );
+        ];
 
         return new Bag($this->http->jsonPost(self::API_CODE_GET, $params));
     }

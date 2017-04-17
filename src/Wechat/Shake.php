@@ -2,8 +2,6 @@
 
 namespace Stoneworld\Wechat;
 
-use Stoneworld\Wechat\Utils\JSON;
-
 /**
  * 微信 摇一摇周边.
  */
@@ -38,9 +36,9 @@ class Shake
      */
     public function verify($ticket)
     {
-        $params = array(
-            'ticket' => $ticket
-        );
+        $params = [
+            'ticket' => $ticket,
+        ];
 
         $response = $this->http->jsonPost(self::API_GET, $params);
 

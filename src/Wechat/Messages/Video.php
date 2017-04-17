@@ -3,7 +3,7 @@
 namespace Stoneworld\Wechat\Messages;
 
 /**
- * 视频消息
+ * 视频消息.
  *
  * @property string $video
  * @property string $title
@@ -13,21 +13,20 @@ namespace Stoneworld\Wechat\Messages;
  */
 class Video extends BaseMessage
 {
-
     /**
-     * 属性
+     * 属性.
      *
      * @var array
      */
-    protected $properties = array(
+    protected $properties = [
                              'title',
                              'description',
                              'media_id',
                              'thumb_media_id',
-                            );
+                            ];
 
     /**
-     * 设置视频消息
+     * 设置视频消息.
      *
      * @param string $mediaId
      *
@@ -41,7 +40,7 @@ class Video extends BaseMessage
     }
 
     /**
-     * 设置视频封面
+     * 设置视频封面.
      *
      * @param string $mediaId
      *
@@ -55,36 +54,36 @@ class Video extends BaseMessage
     }
 
     /**
-     * 生成主动消息数组
+     * 生成主动消息数组.
      *
      * @return array
      */
     public function toStaff()
     {
-        return array(
-                'video' => array(
+        return [
+                'video' => [
                             'title'          => $this->title,
                             'media_id'       => $this->media_id,
                             'description'    => $this->description,
                             'thumb_media_id' => $this->thumb_media_id,
-                           ),
-               );
+                           ],
+               ];
     }
 
     /**
-     * 生成回复消息数组
+     * 生成回复消息数组.
      *
      * @return array
      */
     public function toReply()
     {
-        $response = array(
-                     'Video' => array(
+        $response = [
+                     'Video' => [
                                  'MediaId'     => $this->media_id,
                                  'Title'       => $this->title,
                                  'Description' => $this->description,
-                                ),
-                    );
+                                ],
+                    ];
 
         return $response;
     }

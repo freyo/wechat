@@ -2,67 +2,71 @@
 
 namespace Stoneworld\Wechat;
 
+use Stoneworld\Wechat\Messages\BaseMessage;
 use Stoneworld\Wechat\Utils\Bag;
 use Stoneworld\Wechat\Utils\XML;
-use Stoneworld\Wechat\Crypt;
-use Stoneworld\Wechat\Messages\BaseMessage;
 
 class Server
 {
     /**
-     * 企业号的CorpID
+     * 企业号的CorpID.
+     *
      * @var string
      */
     private $appId;
 
     /**
-     * token
+     * token.
+     *
      * @var string
      */
     private $token;
 
     /**
-     * encodingAesKey
+     * encodingAesKey.
+     *
      * @var string
      */
     private $encodingAESKey;
 
     /**
-     * appSecret
+     * appSecret.
+     *
      * @var [type]
      */
     private $appSecret;
 
     /**
-     * 应用Id
+     * 应用Id.
+     *
      * @var string
      */
     private $agentId;
 
     /**
-     * 输入
+     * 输入.
      *
      * @var \Stoneworld\Wechat\Utils\Bag
      */
     protected $input;
 
     /**
-     * 监听器
+     * 监听器.
      *
      * @var \Stoneworld\Wechat\Utils\Bag
      */
     protected $listeners;
 
     /**
-     * 允许的事件
+     * 允许的事件.
      *
      * @var array
      */
-    protected $events = array(
+    protected $events = [
                          'received',
                          'served',
                          'responseCreated',
-                        );
+                        ];
 
     protected $encryptStr;
 
@@ -78,7 +82,7 @@ class Server
     }
 
     /**
-     * 监听
+     * 监听.
      *
      * @param string          $target
      * @param string|callable $type
@@ -90,7 +94,7 @@ class Server
     {
         if (is_null($callback)) {
             $callback = $type;
-            $type     = '*';
+            $type = '*';
         }
 
         if (!is_callable($callback)) {
@@ -99,7 +103,7 @@ class Server
 
         $type = strtolower($type);
 
-        $listeners = $this->listeners->get("{$target}.{$type}") ?: array();
+        $listeners = $this->listeners->get("{$target}.{$type}") ?: [];
 
         array_push($listeners, $callback);
 
@@ -109,7 +113,7 @@ class Server
     }
 
     /**
-     * 监听事件
+     * 监听事件.
      *
      * @param string|callable $type
      * @param callable        $callback
@@ -122,7 +126,7 @@ class Server
     }
 
     /**
-     * 监听消息
+     * 监听消息.
      *
      * @param string|callable $type
      * @param callable        $callback
@@ -135,7 +139,7 @@ class Server
     }
 
     /**
-     * handle服务端并返回字符串内容
+     * handle服务端并返回字符串内容.
      *
      * @return mixed
      */
@@ -145,12 +149,12 @@ class Server
 
         $encryptStr = !empty($_GET['echostr']) ? $_GET['echostr'] : $this->encryptStr;
 
-        $input = array(
+        $input = [
             $encryptStr,
             $this->token,
             $this->input->get('timestamp'),
             $this->input->get('nonce'),
-        );
+        ];
 
         if ($this->input->get('msg_signature')
             && $this->signature($input) !== $this->input->get('msg_signature')
@@ -159,18 +163,16 @@ class Server
         }
 
         if ($this->input->get('echostr')) {
-
             $xml = $this->getCrypt()->decrypt($this->input->get('echostr'), $this->appId);
-            
+
             return strip_tags($xml);
         }
 
         return $this->response($this->handleRequest());
-
     }
 
     /**
-     * 初始化POST请求数据
+     * 初始化POST请求数据.
      *
      * @return Bag
      */
@@ -180,10 +182,9 @@ class Server
             return;
         }
 
-        $input = array();
+        $input = [];
 
-        if ($_SERVER['REQUEST_METHOD'] == "POST") {
-
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $xmlInput = file_get_contents('php://input');
 
             $array = XML::parse($xmlInput);
@@ -201,9 +202,7 @@ class Server
         }
 
         $this->input = new Bag(array_merge($_REQUEST, (array) $input));
-
     }
-
 
     /**
      * 获取Crypt服务
@@ -226,7 +225,8 @@ class Server
     }
 
     /**
-     * 获取输入
+     * 获取输入.
+     *
      * @param array $input
      */
     public function setInput(array $input)
@@ -235,7 +235,7 @@ class Server
     }
 
     /**
-     * 生成回复内容
+     * 生成回复内容.
      *
      * @param mixed $response
      *
@@ -243,19 +243,18 @@ class Server
      */
     protected function response($response)
     {
-
         if (empty($response)) {
-            return "";
+            return '';
         }
 
         is_string($response) && $response = Message::make('text')->with('content', $response);
 
-        $return = "";
+        $return = '';
 
         if ($response instanceof BaseMessage) {
             $response->from($this->input->get('ToUserName'))->to($this->input->get('FromUserName'));
 
-            $this->call('responseCreated', array($response));
+            $this->call('responseCreated', [$response]);
 
             $return = $response->buildForReply();
 
@@ -266,7 +265,7 @@ class Server
             );
         }
 
-        $return = $this->call('served', array($return), $return);
+        $return = $this->call('served', [$return], $return);
 
         return $return;
     }
@@ -278,8 +277,8 @@ class Server
      */
     protected function handleRequest()
     {
-        $this->call('received', array($this->input));
-        
+        $this->call('received', [$this->input]);
+
         if ($this->input->get('MsgType') && $this->input->get('MsgType') === 'event') {
             return $this->handleEvent($this->input);
         } elseif ($this->input->get('MsgId')) {
@@ -290,7 +289,7 @@ class Server
     }
 
     /**
-     * 处理消息
+     * 处理消息.
      *
      * @param Bag $message
      *
@@ -298,15 +297,15 @@ class Server
      */
     protected function handleMessage($message)
     {
-        if (!is_null($response = $this->call('message.*', array($message)))) {
+        if (!is_null($response = $this->call('message.*', [$message]))) {
             return $response;
         }
 
-        return $this->call("message.{$message['MsgType']}", array($message));
+        return $this->call("message.{$message['MsgType']}", [$message]);
     }
 
     /**
-     * 处理事件
+     * 处理事件.
      *
      * @param Bag $event
      *
@@ -314,17 +313,17 @@ class Server
      */
     protected function handleEvent($event)
     {
-        if (!is_null($response = $this->call('event.*', array($event)))) {
+        if (!is_null($response = $this->call('event.*', [$event]))) {
             return $response;
         }
 
         $event['Event'] = strtolower($event['Event']);
 
-        return $this->call("event.{$event['Event']}", array($event));
+        return $this->call("event.{$event['Event']}", [$event]);
     }
 
     /**
-     * 检查微信签名有效性
+     * 检查微信签名有效性.
      *
      * @param array $input
      */
@@ -336,7 +335,7 @@ class Server
     }
 
     /**
-     * 调用监听器
+     * 调用监听器.
      *
      * @param string      $key
      * @param array       $args
@@ -364,7 +363,7 @@ class Server
     }
 
     /**
-     * 魔术调用
+     * 魔术调用.
      *
      * @param string $method
      * @param array  $args
@@ -374,7 +373,6 @@ class Server
     public function __call($method, $args)
     {
         if (in_array($method, $this->events, true)) {
-            
             $callback = array_shift($args);
 
             is_callable($callback) && $this->listeners->set($method, $callback);
@@ -384,7 +382,7 @@ class Server
     }
 
     /**
-     * 直接返回以字符串形式输出时
+     * 直接返回以字符串形式输出时.
      *
      * @return string
      */
@@ -392,5 +390,4 @@ class Server
     {
         return ''.$this->serve();
     }
-
 }

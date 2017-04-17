@@ -6,8 +6,7 @@ use Exception as BaseException;
 
 class Exception extends BaseException
 {
-
-    protected $errors = array(
+    protected $errors = [
         '-1'    => '系统繁忙',
         '0'     => '请求成功',
         '40001' => '获取access_token时Secret错误，或者access_token无效',
@@ -307,7 +306,7 @@ class Exception extends BaseException
         '91054' => '卡券描述超过1024个汉字',
         '91055' => '卡券副标题长度超过18个汉字',
         '91058' => '未开通卡券服务，不允许调用卡券接口',
-    );
+    ];
 
     /**
      * @see \Exception::__construct

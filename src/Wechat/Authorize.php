@@ -9,8 +9,8 @@ use Stoneworld\Wechat\Utils\Bag;
  */
 class Authorize
 {
-    const API_USER  = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_login_info';
-    const API_URL   = 'https://qy.weixin.qq.com/cgi-bin/loginpage';
+    const API_USER = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_login_info';
+    const API_URL = 'https://qy.weixin.qq.com/cgi-bin/loginpage';
     const API_LOGIN = 'https://qyapi.weixin.qq.com/cgi-bin/service/get_login_url';
 
     /**
@@ -46,10 +46,10 @@ class Authorize
      */
     public function __construct($appId, $appSecret)
     {
-        $this->appId     = $appId;
+        $this->appId = $appId;
         $this->appSecret = $appSecret;
-        $this->http      = new Http(new AccessToken($appId, $appSecret));
-        $this->input     = new Input();
+        $this->http = new Http(new AccessToken($appId, $appSecret));
+        $this->input = new Input();
     }
 
     /**
@@ -80,7 +80,7 @@ class Authorize
     public function redirect($to = null, $state = null, $usertype = null)
     {
         $state = $state ? $state : md5(time());
-        header('Location:' . $this->url($to, $state, $usertype));
+        header('Location:'.$this->url($to, $state, $usertype));
 
         exit;
     }
@@ -98,23 +98,24 @@ class Authorize
     {
         $to !== null || $to = Url::current();
 
-        $params = array(
+        $params = [
             'corp_id'      => $this->appId,
             'redirect_uri' => $to,
             'state'        => $state,
-            'usertype'     => $usertype
-        );
+            'usertype'     => $usertype,
+        ];
 
-        return self::API_URL . '?' . http_build_query($params);
+        return self::API_URL.'?'.http_build_query($params);
     }
 
     /**
      * 获取企业号登录用户信息.
+     *
      * @return array
      */
     public function user()
     {
-        return $this->http->jsonPost(self::API_USER, array('auth_code' => $this->input->get('auth_code')));
+        return $this->http->jsonPost(self::API_USER, ['auth_code' => $this->input->get('auth_code')]);
     }
 
     /**
@@ -128,11 +129,11 @@ class Authorize
      */
     public function getLoginUrl($login_ticket, $target, $agentid = null)
     {
-        $params = array(
+        $params = [
             'login_ticket' => $login_ticket,
             'target'       => $target,
-            'agentid'      => $agentid
-        );
+            'agentid'      => $agentid,
+        ];
 
         $response = $this->http->jsonPost(self::API_LOGIN, $params);
 

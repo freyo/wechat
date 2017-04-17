@@ -1,5 +1,7 @@
 <?php
+
 namespace Stoneworld\Wechat;
+
 /**
  * error code 说明.
  * <ul>
@@ -14,22 +16,20 @@ namespace Stoneworld\Wechat;
  *    <li>-40009: base64加密失败</li>
  *    <li>-40010: base64解密失败</li>
  *    <li>-40011: 生成xml失败</li>
- * </ul>
+ * </ul>.
  */
 class ErrorCode
 {
-	public static $OK = 0;
-	public static $ValidateSignatureError = -40001;
-	public static $ParseXmlError = -40002;
-	public static $ComputeSignatureError = -40003;
-	public static $IllegalAesKey = -40004;
-	public static $ValidateCorpidError = -40005;
-	public static $EncryptAESError = -40006;
-	public static $DecryptAESError = -40007;
-	public static $IllegalBuffer = -40008;
-	public static $EncodeBase64Error = -40009;
-	public static $DecodeBase64Error = -40010;
-	public static $GenReturnXmlError = -40011;
+    public static $OK = 0;
+    public static $ValidateSignatureError = -40001;
+    public static $ParseXmlError = -40002;
+    public static $ComputeSignatureError = -40003;
+    public static $IllegalAesKey = -40004;
+    public static $ValidateCorpidError = -40005;
+    public static $EncryptAESError = -40006;
+    public static $DecryptAESError = -40007;
+    public static $IllegalBuffer = -40008;
+    public static $EncodeBase64Error = -40009;
+    public static $DecodeBase64Error = -40010;
+    public static $GenReturnXmlError = -40011;
 }
-
-?>

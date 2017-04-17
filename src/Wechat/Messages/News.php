@@ -5,20 +5,19 @@ namespace Stoneworld\Wechat\Messages;
 use Closure;
 
 /**
- * 图文消息
+ * 图文消息.
  */
 class News extends BaseMessage
 {
-
     /**
-     * 属性
+     * 属性.
      *
      * @var array
      */
-    protected $items = array();
+    protected $items = [];
 
     /**
-     * 添加图文消息内容
+     * 添加图文消息内容.
      *
      * @param NewsItem $item
      *
@@ -32,7 +31,7 @@ class News extends BaseMessage
     }
 
     /**
-     * 添加多条图文消息
+     * 添加多条图文消息.
      *
      * @param array|Closure $items
      *
@@ -44,49 +43,49 @@ class News extends BaseMessage
             $items = $items();
         }
 
-        array_map(array($this, 'item'), (array) $items);
+        array_map([$this, 'item'], (array) $items);
 
         return $this;
     }
 
     /**
-     * 生成主动消息数组
+     * 生成主动消息数组.
      */
     public function toStaff()
     {
-        $articles = array();
+        $articles = [];
 
         foreach ($this->items as $item) {
-            $articles[] = array(
+            $articles[] = [
                            'title'       => $item->title,
                            'description' => $item->description,
                            'url'         => $item->url,
                            'picurl'      => $item->pic_url,
-                          );
+                          ];
         }
 
-        return array('news' => array('articles' => $articles));
+        return ['news' => ['articles' => $articles]];
     }
 
     /**
-     * 生成回复消息数组
+     * 生成回复消息数组.
      */
     public function toReply()
     {
-        $articles = array();
+        $articles = [];
 
         foreach ($this->items as $item) {
-            $articles[] = array(
+            $articles[] = [
                            'Title'       => $item->title,
                            'Description' => $item->description,
                            'Url'         => $item->url,
                            'PicUrl'      => $item->pic_url,
-                          );
+                          ];
         }
 
-        return array(
+        return [
                 'ArticleCount' => count($articles),
                 'Articles'     => $articles,
-               );
+               ];
     }
 }
